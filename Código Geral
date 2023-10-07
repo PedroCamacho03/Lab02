@@ -1,0 +1,181 @@
+#include <LiquidCrystal.h>
+
+#define RS PM_0
+#define RW PM_1
+#define EN PM_2
+#define D4 PK_4
+#define D5 PK_5
+#define D6 PK_6
+#define D7 PK_7
+
+LiquidCrystal lcd(RS, RW, EN, D4, D5, D6, D7);
+
+char tecla_pressionada;
+int sentido = 1; //sentido de rotação 1: horario  -1: anti-horario
+int velocidade = 0; //velocidade em % da Vnom portanto vai variar de 0 a 100%
+
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+  lcd.begin(16,2);
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Horario");
+  lcd.setCursor(0,1);
+  lcd.print("000 RPM");
+}
+
+void loop() {
+  // put your main code here, to run repeatedly: 
+  if(Serial.available()>0){              //espera a entreda da tecla no monitor serial
+    tecla_pressionada = Serial.read();
+    Serial.println(tecla_pressionada);
+    switch(tecla_pressionada){
+      case 'A':             //troca para antihorario
+      case 'a':           
+        sentido = -1;
+        Serial.println("Sentido AH");
+        break;
+      case 'D':             //troca para horario
+      case 'd':
+        sentido = 1;
+        Serial.println("Sentido H");
+        break;
+      case 'W':             //aumento da velocidade
+      case 'w':
+        if(velocidade<100){
+          velocidade += 10;
+        }
+        Serial.print("Velocidade = ");
+        Serial.println(velocidade);
+        break;
+      case 'S':             //reduçao da velocidade
+      case 's':
+        if(velocidade>0){
+          velocidade -= 10;
+        }
+        Serial.print("Velocidade = ");
+        Serial.println(velocidade);
+        break;
+      case 'q':
+      case 'Q':            //girar 90 graus (SE VELOCIDADE FOR 0!!)
+        if(velocidade == 0){
+          Serial.println("Girar 90 graus");
+        }
+        break;
+      case 'e':
+      case 'E':            //girar 180 graus (SE VELOCIDADE FOR 0!!)
+        if(velocidade == 0){
+          Serial.println("Girar 180 graus");
+        }
+        break;
+      case 'M':
+      case 'm':           //menu de numero de voltas
+        if(velocidade == 0){
+          Serial.println("Escolha o numero de voltas");
+        }
+      case ' ':
+        velocidade = 0;
+        Serial.print("Velocidade = ");
+        Serial.println(velocidade);
+        break;
+      case '1':
+        velocidade = 10;
+        Serial.print("Velocidade = ");
+        Serial.println(velocidade);
+        break;
+      case '2':
+        velocidade = 20;
+        Serial.print("Velocidade = ");
+        Serial.println(velocidade);
+        break;
+      case '3':
+        velocidade = 30;
+        Serial.print("Velocidade = ");
+        Serial.println(velocidade);
+        break;
+      case '4':
+        velocidade = 40;
+        Serial.print("Velocidade = ");
+        Serial.println(velocidade);
+        break;
+      case '5':
+        velocidade = 50;
+        Serial.print("Velocidade = ");
+        Serial.println(velocidade);
+        break;
+      case '6':
+        velocidade = 60;
+        Serial.print("Velocidade = ");
+        Serial.println(velocidade);
+        break;
+      case '7':
+        velocidade = 70;
+        Serial.print("Velocidade = ");
+        Serial.println(velocidade);
+        break;
+      case '8':
+        velocidade = 80;
+        Serial.print("Velocidade = ");
+        Serial.println(velocidade);
+        break;
+      case '9':
+        velocidade = 90;
+        Serial.print("Velocidade = ");
+        Serial.println(velocidade);
+        break;
+      case '0':
+        velocidade = 100;
+        Serial.print("Velocidade = ");
+        Serial.println(velocidade);
+        break;
+    }
+    imprimeLCD(sentido, velocidade);
+  }
+}
+
+void imprimeLCD(int sentido, int velocidade){   //separei aqui tudo que vai ser impresso no lcd (sentido e velocidade atual)
+  lcd.clear();
+  lcd.setCursor(0,0);
+  if(sentido == 1){
+    lcd.print("HORARIO");
+  }else if(sentido == -1){
+    lcd.print("ANTI HORARIO");
+  }
+  lcd.setCursor(0,1);
+  switch (velocidade){
+    case 0:                     //completar aqui com as devidas velocidades (porcentagens da nominal)
+    lcd.print("000 RPM");
+    break;
+    case 10:
+    lcd.print("000 RPM");
+    break;
+    case 20:
+    lcd.print("000 RPM");
+    break;
+    case 30:
+    lcd.print("000 RPM");
+    break;
+    case 40:
+    lcd.print("000 RPM");
+    break;
+    case 50:
+    lcd.print("000 RPM");
+    break;
+    case 60:
+    lcd.print("000 RPM");
+    break;
+    case 70:
+    lcd.print("000 RPM");
+    break;
+    case 80:
+    lcd.print("000 RPM");
+    break;
+    case 90:
+    lcd.print("000 RPM");
+    break;
+    case 100:
+    lcd.print("000 RPM");
+    break;
+  }
+}
